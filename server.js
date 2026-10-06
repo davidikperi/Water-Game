@@ -204,7 +204,7 @@ const server = http.createServer(async (req, res) => {
 if (require.main === module)
   store.ready
     .then(() =>
-      server.listen(Number(process.env.PORT) || 3000, process.env.HOST || '127.0.0.1', () =>
+      server.listen(Number(process.env.PORT) || 3000, process.env.HOST || '0.0.0.0', () =>
         console.log(
           'Water Game: http://localhost:' +
             server.address().port +
