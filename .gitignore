@@ -1,0 +1,7 @@
+.admin-credentials.json
+.watergame-data.json
+.watergame-data.json.tmp
+node_modules/
+.env
+.env.*
+!.env.example

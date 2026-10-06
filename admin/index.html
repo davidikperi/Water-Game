@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Water Game · Admin</title>
+    <link rel="stylesheet" href="/admin/dashboard.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <div>
+          <span class="eyebrow">Water Game / Analytics</span>
+          <h1>Diver dashboard</h1>
+          <p>Players, activity, and progress through the ocean.</p>
+        </div>
+        <div>
+          <a href="/">Back to game</a>
+          <button id="refresh">Refresh</button>
+          <button id="export">Export JSON</button>
+        </div>
+      </header>
+      <p class="notice">
+        <strong>Shared player analytics.</strong>
+        Players are counted by browser profile, rather than verified people. Tracking starts with
+        this update; previous attempts cannot be recovered.
+      </p>
+      <p id="updated" aria-live="polite"></p>
+      <div class="cards" id="cards"></div>
+      <section>
+        <div class="section-head">
+          <h2>Players</h2>
+          <input
+            id="search"
+            type="search"
+            placeholder="Search players"
+            aria-label="Search players"
+          />
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Player</th>
+                <th>Levels cleared</th>
+                <th>Stars</th>
+                <th>Current level</th>
+                <th>Sessions</th>
+                <th>Last seen</th>
+              </tr>
+            </thead>
+            <tbody id="players"></tbody>
+          </table>
+        </div>
+      </section>
+      <section>
+        <div class="section-head">
+          <h2>Level performance</h2>
+          <span>Win rate = wins / attempts since tracking began</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Level</th>
+                <th>Attempts</th>
+                <th>Wins</th>
+                <th>Win rate</th>
+                <th>Players cleared</th>
+              </tr>
+            </thead>
+            <tbody id="levels"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    <script src="/js/analytics.js"></script>
+    <script src="/admin/dashboard.js"></script>
+  </body>
+</html>

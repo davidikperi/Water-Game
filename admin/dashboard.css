@@ -1,0 +1,161 @@
+:root {
+  font-family:
+    Segoe UI,
+    system-ui,
+    sans-serif;
+  color: #e9f5ff;
+  background: #081729;
+  color-scheme: dark;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+main {
+  max-width: 1200px;
+  margin: auto;
+  padding: 32px 24px;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+h1 {
+  margin: 8px 0;
+  font-size: clamp(28px, 5vw, 42px);
+}
+.eyebrow {
+  color: #74e4d4;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+p {
+  color: #a7bdd1;
+  line-height: 1.6;
+}
+a {
+  color: #74e4d4;
+}
+button,
+input {
+  font: inherit;
+  border: 1px solid #36516c;
+  border-radius: 10px;
+  padding: 10px 14px;
+  background: #142b43;
+  color: inherit;
+}
+button {
+  cursor: pointer;
+}
+button:hover {
+  background: #23445e;
+}
+.notice {
+  padding: 16px 20px;
+  border: 1px solid #36516c;
+  background: #12283c;
+  border-radius: 14px;
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 24px 0;
+}
+.card,
+section {
+  background: #102238;
+  border: 1px solid #233d56;
+  border-radius: 16px;
+  padding: 20px;
+}
+.card span {
+  color: #a7bdd1;
+  font-size: 13px;
+}
+.card strong {
+  display: block;
+  font-size: 36px;
+  margin-top: 10px;
+  color: #fff;
+}
+section {
+  margin-top: 20px;
+}
+h2 {
+  font-size: 20px;
+  margin: 0;
+}
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.table-wrap {
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+}
+th {
+  color: #9fb8cc;
+  font-weight: 500;
+}
+th,
+td {
+  padding: 14px 10px;
+  border-bottom: 1px solid #233d56;
+  white-space: nowrap;
+}
+td:first-child {
+  color: #74e4d4;
+}
+input {
+  max-width: 100%;
+  width: 250px;
+}
+.empty {
+  text-align: center;
+  padding: 32px;
+  color: #a7bdd1;
+}
+.bar {
+  width: 100px;
+  background: #263e56;
+  border-radius: 10px;
+  height: 6px;
+  margin-top: 6px;
+}
+.bar i {
+  display: block;
+  background: #74e4d4;
+  height: 100%;
+  border-radius: 10px;
+}
+@media (max-width: 650px) {
+  main {
+    padding: 24px 16px;
+  }
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .card {
+    padding: 16px;
+  }
+  .card strong {
+    font-size: 28px;
+  }
+}

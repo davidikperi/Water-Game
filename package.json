@@ -1,0 +1,18 @@
+{
+  "name": "water-game",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "test": "node tools/check-admin.js && node tools/check-music.js && node tools/check-splash.js && node tools/check-assets.js && node tools/check-guidance.js && node tools/check-jets.js && node tools/check-night.js && node tools/check-habitats.js",
+    "db:setup": "node tools/configure-neon.js",
+    "format": "prettier --write index.html admin js css server.js storage.js sw.js tools README.md package.json .prettierrc.json",
+    "format:check": "prettier --check index.html admin js css server.js storage.js sw.js tools README.md package.json .prettierrc.json"
+  },
+  "devDependencies": {
+    "ffmpeg-static": "^5.3.0",
+    "prettier": "^3.9.9"
+  },
+  "dependencies": {
+    "pg": "^8.23.1"
+  }
+}

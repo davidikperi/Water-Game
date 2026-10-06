@@ -1,0 +1,19 @@
+{
+  "id": "./",
+  "name": "Water Game",
+  "short_name": "Water Game",
+  "description": "The handheld water ring toss toy: pump the water, float the rings, land them on the pegs. 12 levels.",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "any",
+  "background_color": "#ffd23a",
+  "theme_color": "#e8337c",
+  "categories": ["games", "kids", "entertainment"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

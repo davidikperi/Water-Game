@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Water Game · Admin login</title>
+    <link rel="stylesheet" href="/admin/login.css" />
+  </head>
+  <body>
+    <main>
+      <span class="eyebrow">WATER GAME / ADMIN</span>
+      <h1>Welcome back.</h1>
+      <p>Sign in to view player activity and level progress.</p>
+      <form id="login">
+        <label for="code">Login code</label>
+        <input id="code" name="code" autocomplete="username" required maxlength="128" />
+        <label for="password">Password</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          autocomplete="current-password"
+          required
+          maxlength="256"
+        />
+        <button id="submit">Sign in</button>
+        <p id="error" role="alert"></p>
+      </form>
+      <a href="/">Back to game</a>
+    </main>
+    <script src="/admin/login.js"></script>
+  </body>
+</html>

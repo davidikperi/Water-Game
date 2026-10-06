@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Water Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#e8337c" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Water Game" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <meta
+      name="description"
+      content="The handheld water ring toss toy, rebuilt for the browser with 12 levels."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Lilita+One&display=swap"
+    />
+    <link rel="stylesheet" href="css/game.css" />
+  </head>
+  <body>
+    <div class="app">
+      <section id="menu" class="title">
+        <canvas id="titleSky" aria-hidden="true"></canvas>
+        <div class="title-top">
+          <div class="title-top-r">
+            <button class="mbtn" id="howBtn" type="button" aria-label="How to play">?</button>
+            <button class="mbtn" id="titleRanks" type="button" aria-label="Leaderboard">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M7 3h10v5a5 5 0 0 1-10 0Z"
+                  fill="#ffd23f"
+                  stroke="#fff"
+                  stroke-width="1.5"
+                />
+                <path
+                  d="M7 5H4v1.5A3.5 3.5 0 0 0 7.5 10M17 5h3v1.5A3.5 3.5 0 0 1 16.5 10"
+                  fill="none"
+                  stroke="#fff"
+                  stroke-width="1.8"
+                />
+                <path d="M10 13h4l1 4H9Z" fill="#fff" />
+                <rect x="7" y="17" width="10" height="3.5" rx="1" fill="#fff" />
+              </svg>
+            </button>
+          </div>
+          <div class="title-top-r">
+            <button class="mbtn" id="musicBtnMenu" type="button" aria-label="Music">
+              <svg viewBox="0 0 24 24" fill="#fff">
+                <path d="M9 18.5A2.5 2.5 0 1 1 6.5 16 2.5 2.5 0 0 1 9 18.5ZM9 18.5V5l11-2v13" />
+                <circle cx="17.5" cy="16" r="2.5" />
+                <path d="M9 5l11-2v3L9 8Z" />
+              </svg>
+            </button>
+            <button class="mbtn" id="soundBtnMenu" type="button" aria-label="Sound effects">
+              <svg viewBox="0 0 24 24" fill="#fff">
+                <path d="M4 9h4l5-4v14l-5-4H4Z" />
+                <path
+                  d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"
+                  fill="none"
+                  stroke="#fff"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="title-main">
+          <p class="pix title-kicker">THE CLASSIC ₦100 TOY</p>
+          <h1 class="logo" aria-label="Water Game">
+            <span class="w1">WATER</span>
+            <span class="w2">GAME</span>
+            <svg class="title-fish" viewBox="0 0 60 40" aria-hidden="true">
+              <path
+                d="M12 20 2 9v22Z"
+                fill="#ff7a1a"
+                stroke="#1d1d2b"
+                stroke-width="2"
+                stroke-linejoin="round"
+              />
+              <ellipse
+                cx="32"
+                cy="20"
+                rx="20"
+                ry="14"
+                fill="#ff7a1a"
+                stroke="#1d1d2b"
+                stroke-width="2"
+              />
+              <path
+                d="M23 7c-3 8-3 18 0 26M35 6c-3 9-3 19 0 28"
+                stroke="#fff"
+                stroke-width="6"
+                fill="none"
+              />
+              <circle cx="44" cy="16" r="5" fill="#fff" stroke="#1d1d2b" stroke-width="1.5" />
+              <circle cx="45.5" cy="16" r="2.6" fill="#1d1d2b" />
+              <path
+                d="M43 25q4 3 8 0"
+                stroke="#1d1d2b"
+                stroke-width="2"
+                fill="none"
+                stroke-linecap="round"
+              />
+            </svg>
+            <svg class="title-star" viewBox="0 0 40 40" aria-hidden="true">
+              <path
+                d="m20 2 5 12 13 1-10 8 3 13-11-7-11 7 3-13L2 15l13-1Z"
+                fill="#ffd23f"
+                stroke="#c27700"
+                stroke-width="2.5"
+                stroke-linejoin="round"
+              />
+              <circle cx="16" cy="17" r="2" fill="#fff" />
+            </svg>
+            <svg class="spark s1" viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M10 0 12 8 20 10 12 12 10 20 8 12 0 10 8 8Z" fill="#fff" />
+            </svg>
+            <svg class="spark s2" viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M10 0 12 8 20 10 12 12 10 20 8 12 0 10 8 8Z" fill="#fff" />
+            </svg>
+          </h1>
+          <button class="press pix" id="playBtn" type="button">TAP TO START!</button>
+        </div>
+        <p class="pix title-foot">
+          © 2026 WATER GAME. 120 LEVELS UNDER THE SEA.
+          <br />
+          PUMP · FLOAT · LAND THE RINGS.
+        </p>
+
+        <div class="sheet" id="howSheet" hidden>
+          <div class="sheet-card" role="dialog" aria-labelledby="howTitle">
+            <div class="row">
+              <h2 id="howTitle">How to play</h2>
+              <button class="btn ghost" id="howClose" type="button">Close</button>
+            </div>
+            <ul class="how">
+              <li>
+                <span>
+                  Hold or tap the two yellow pumps, or tap either half of the water, to shoot water
+                  from the left and right jets. Keys:
+                  <kbd>A</kbd>
+                  /
+                  <kbd>←</kbd>
+                  and
+                  <kbd>L</kbd>
+                  /
+                  <kbd>→</kbd>
+                  .
+                </span>
+              </li>
+              <li>
+                <span>A quick tap gives a strong burst. Holding keeps a weak stream going.</span>
+              </li>
+              <li>
+                <span>
+                  Float the rings over a peg and let them sink. A ring only goes on when it drops
+                  onto the tip from above.
+                </span>
+              </li>
+              <li>
+                <span>
+                  Coloured pegs only take rings of their own colour. Keep black rings off the pegs:
+                  you can't win while one is on.
+                </span>
+              </li>
+              <li>
+                <span>
+                  MEGA (or
+                  <kbd>Space</kbd>
+                  ) throws every loose ring up and empties any peg holding a black ring. It
+                  recharges in 8 seconds.
+                </span>
+              </li>
+              <li>
+                <span>
+                  Every 5th level is a speed round: land the target number of rings before the clock
+                  runs out.
+                </span>
+              </li>
+            </ul>
+            <div class="panel install" id="installPanel" hidden>
+              <img src="icons/icon-192.png" alt="" />
+              <div class="txt">
+                <strong>Put it on your home screen</strong>
+                <span id="installText">
+                  Install Water Game to play full screen, straight from your home screen, even
+                  offline.
+                </span>
+              </div>
+              <button class="btn" id="installBtn" type="button" hidden>Install</button>
+            </div>
+            <div class="footer">
+              <button class="btn ghost" id="resetBtn" type="button">Reset progress</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section id="game" hidden>
+      <div class="tank" id="tank">
+        <canvas
+          id="c"
+          aria-label="Water tank with floating rings, pegs and sea creatures. Tap the left or right half to fire that jet."
+        ></canvas>
+        <div class="zones" id="zones" hidden>
+          <span>Tap here for the left jet</span>
+          <span>Tap here for the right jet</span>
+        </div>
+        <div class="hud">
+          <div class="group">
+            <button
+              class="ibtn"
+              id="backBtn"
+              type="button"
+              aria-label="Back to levels"
+              title="Levels"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M15 5 8 12l7 7" />
+              </svg>
+            </button>
+          </div>
+          <div class="plate">
+            <span class="lv" id="hudLevel">Level 1</span>
+            <div class="chips">
+              <span class="chip" id="hudRings" title="Rings on pegs">0/4 on</span>
+              <span class="chip" id="hudPumps" title="Pumps left" hidden>70 pumps</span>
+              <span class="chip" id="hudTime" title="Time left">2:30</span>
+            </div>
+          </div>
+          <div class="group">
+            <button
+              class="ibtn"
+              id="soundBtnGame"
+              type="button"
+              aria-label="Sound on"
+              title="Sound"
+            >
+              ♪
+            </button>
+            <button
+              class="ibtn"
+              id="restartBtn"
+              type="button"
+              aria-label="Restart level"
+              title="Restart"
+            >
+              ↻
+            </button>
+            <button
+              class="ibtn"
+              id="fsBtn"
+              type="button"
+              aria-label="Full screen"
+              title="Full screen"
+              hidden
+            >
+              ⛶
+            </button>
+          </div>
+        </div>
+        <div class="overlay" id="overlay" hidden></div>
+      </div>
+      <div class="pcell pl">
+        <div class="pump-well">
+          <button class="pump" id="bL" type="button" aria-label="Left pump">
+            <span>PUMP</span>
+          </button>
+        </div>
+      </div>
+      <div class="pcell pb">
+        <div class="mega-well" id="megaWell">
+          <button
+            class="mega"
+            id="megaBtn"
+            type="button"
+            aria-label="Mega burst: blast every loose ring upward"
+          >
+            <span>MEGA</span>
+          </button>
+        </div>
+        <div class="badge" id="megaLabel">
+          MEGA BURST
+          <small>READY</small>
+        </div>
+      </div>
+      <div class="pcell pr">
+        <div class="pump-well">
+          <button class="pump" id="bR" type="button" aria-label="Right pump">
+            <span>PUMP</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <svg width="0" height="0" aria-hidden="true" class="icon-definitions">
+      <defs>
+        <symbol id="d-coral" viewBox="0 0 100 100">
+          <g fill="none" stroke-linecap="round" stroke="#ff6fa8" stroke-width="9">
+            <path d="M50 98V62M50 74 31 54V32M31 54 18 44M50 64 70 42V24M70 42l14-7M50 62V40" />
+          </g>
+          <g fill="#ffa6cb">
+            <circle cx="31" cy="29" r="6.5" />
+            <circle cx="17" cy="42" r="5.5" />
+            <circle cx="70" cy="21" r="6.5" />
+            <circle cx="85" cy="33" r="5.5" />
+            <circle cx="50" cy="37" r="6.5" />
+          </g>
+        </symbol>
+        <symbol id="d-kelp" viewBox="0 0 100 100">
+          <g fill="none" stroke-linecap="round">
+            <path d="M36 100C24 80 46 66 34 46S40 16 32 2" stroke="#2fbf71" stroke-width="8" />
+            <path d="M60 100C72 82 52 66 64 48S58 22 66 10" stroke="#25a862" stroke-width="7" />
+          </g>
+          <g fill="#5be08f">
+            <ellipse cx="44" cy="60" rx="9" ry="4" transform="rotate(-30 44 60)" />
+            <ellipse cx="26" cy="32" rx="8" ry="3.5" transform="rotate(30 26 32)" />
+            <ellipse cx="54" cy="36" rx="8" ry="3.5" transform="rotate(-30 54 36)" />
+            <ellipse cx="72" cy="66" rx="9" ry="4" transform="rotate(30 72 66)" />
+          </g>
+        </symbol>
+        <symbol id="d-shell" viewBox="0 0 100 100">
+          <path
+            d="M50 30C26 30 14 54 18 76h64c4-22-8-46-32-46Z"
+            fill="#ffd3df"
+            stroke="#e98aac"
+            stroke-width="3"
+          />
+          <g stroke="#e98aac" stroke-width="3" fill="none">
+            <path d="M50 32v44M36 36l-6 40M64 36l6 40M26 48l-7 26M74 48l7 26" />
+          </g>
+          <path d="M40 76h20l-4 9H44Z" fill="#f4a7c0" />
+        </symbol>
+        <symbol id="d-chest" viewBox="0 0 100 100">
+          <path d="M18 52h64v36H18Z" fill="#a85a2a" />
+          <path d="M18 52c0-20 64-20 64 0Z" fill="#c26d33" />
+          <g fill="#ffcf3f">
+            <path d="M18 52h64v6H18ZM46 46h8v20h-8Z" />
+            <circle cx="34" cy="42" r="5" />
+            <circle cx="44" cy="38" r="5" />
+            <circle cx="60" cy="40" r="5" />
+          </g>
+          <path d="M18 58h64M30 52v36M70 52v36" stroke="#7a3d17" stroke-width="3" />
+        </symbol>
+        <symbol id="d-anchor" viewBox="0 0 100 100">
+          <g fill="none" stroke="#a9c3dc" stroke-width="7" stroke-linecap="round">
+            <circle cx="50" cy="18" r="8" />
+            <path d="M50 26v62M34 40h32M20 66c4 18 18 22 30 22s26-4 30-22" />
+          </g>
+          <path d="M14 64l12-4-2 12ZM86 64l-12-4 2 12Z" fill="#a9c3dc" />
+        </symbol>
+        <symbol id="d-anemone" viewBox="0 0 100 100">
+          <path d="M30 92c0-16 40-16 40 0Z" fill="#c4582a" />
+          <g stroke="#ff9a3c" stroke-width="7" stroke-linecap="round">
+            <path
+              d="M50 80V44M40 80 28 50M60 80 72 50M34 82 16 62M66 82 84 62M45 80 40 46M55 80 60 46"
+            />
+          </g>
+          <g fill="#ffd36a">
+            <circle cx="50" cy="42" r="5" />
+            <circle cx="27" cy="48" r="5" />
+            <circle cx="73" cy="48" r="5" />
+            <circle cx="15" cy="60" r="5" />
+            <circle cx="85" cy="60" r="5" />
+            <circle cx="39" cy="44" r="4" />
+            <circle cx="61" cy="44" r="4" />
+          </g>
+        </symbol>
+        <symbol id="d-rock" viewBox="0 0 100 100">
+          <path d="M10 90c2-26 22-40 42-38s36 14 38 38Z" fill="#5a6fae" />
+          <path
+            d="M24 70c8-8 20-10 30-8"
+            stroke="#7d92cf"
+            stroke-width="4"
+            fill="none"
+            stroke-linecap="round"
+          />
+          <path
+            d="m66 46 5 10 11 1-8 7 3 11-11-6-10 6 3-11-8-7 11-1Z"
+            fill="#ff8a5c"
+            stroke="#d65a2e"
+            stroke-width="2"
+          />
+        </symbol>
+        <symbol id="d-jelly" viewBox="0 0 100 100">
+          <g stroke="#e2cfff" stroke-width="3" fill="none" stroke-linecap="round">
+            <path
+              d="M36 50c-4 12 4 20 0 34M46 52c-3 12 3 22 0 36M56 52c3 12-3 22 0 36M66 50c4 12-4 20 0 34"
+            />
+          </g>
+          <path d="M24 52c0-34 54-34 54 0Z" fill="#c9a7ff" />
+          <ellipse cx="40" cy="34" rx="8" ry="5" fill="rgba(255,255,255,.55)" />
+        </symbol>
+        <symbol id="d-fish" viewBox="0 0 46 28">
+          <path d="M8 14 0 4v20Z" fill="currentColor" />
+          <ellipse cx="25" cy="14" rx="17" ry="10" fill="currentColor" />
+          <circle cx="34" cy="11" r="2.4" fill="#0d1b4a" />
+        </symbol>
+      </defs>
+    </svg>
+    <div class="sea-screen" id="nameScreen" hidden>
+      <form class="sea-card" id="nameForm" autocomplete="off">
+        <div class="diver" aria-hidden="true">
+          <svg viewBox="0 0 66 50">
+            <path
+              d="M16 25 7 16v18Z"
+              fill="#ff7a1a"
+              stroke="#1d1d2b"
+              stroke-width="1.5"
+              stroke-linejoin="round"
+            />
+            <ellipse
+              cx="34"
+              cy="25"
+              rx="17"
+              ry="12"
+              fill="#ff7a1a"
+              stroke="#1d1d2b"
+              stroke-width="1.5"
+            />
+            <path
+              d="M26 14c-3 7-3 15 0 22M37 13c-3 8-3 16 0 24"
+              stroke="#fff"
+              stroke-width="5"
+              fill="none"
+            />
+            <circle cx="44" cy="22" r="4.2" fill="#fff" stroke="#1d1d2b" stroke-width="1.2" />
+            <circle cx="45" cy="22" r="2.2" fill="#1d1d2b" />
+            <path
+              d="M43 29q3 2.5 6 0"
+              stroke="#1d1d2b"
+              stroke-width="1.5"
+              fill="none"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+        <span class="eyebrow pix">WELCOME, DIVER!</span>
+        <h2 id="nameTitle">What should we call you?</h2>
+        <p>Your name goes on the leaderboard next to your stars.</p>
+        <div class="name-row">
+          <input
+            class="name-in"
+            id="nameInput"
+            type="text"
+            maxlength="16"
+            placeholder="Your name"
+            aria-label="Your name"
+            spellcheck="false"
+          />
+          <button
+            class="dice"
+            id="nameDice"
+            type="button"
+            aria-label="Pick a random name"
+            title="Random name"
+          >
+            🎲
+          </button>
+        </div>
+        <p class="notice" id="nameNotice" role="status"></p>
+        <button class="go-btn" id="nameGo" type="submit">
+          <b>Let's dive!</b>
+          <small>2–16 letters or numbers</small>
+        </button>
+      </form>
+    </div>
+    <div class="sea-screen" id="boardScreen" hidden>
+      <div class="sea-card board-card" role="dialog" aria-labelledby="boardTitle">
+        <div class="board-head">
+          <svg viewBox="0 0 24 24">
+            <path d="M7 3h10v5a5 5 0 0 1-10 0Z" fill="#ffd23f" stroke="#fff" stroke-width="1.5" />
+            <path
+              d="M7 5H4v1.5A3.5 3.5 0 0 0 7.5 10M17 5h3v1.5A3.5 3.5 0 0 1 16.5 10"
+              fill="none"
+              stroke="#fff"
+              stroke-width="1.8"
+            />
+            <path d="M10 13h4l1 4H9Z" fill="#fff" />
+            <rect x="7" y="17" width="10" height="3.5" rx="1" fill="#fff" />
+          </svg>
+          <h2 id="boardTitle">Leaderboard</h2>
+        </div>
+        <p class="small-note" id="boardNote">Ranked by stars collected.</p>
+        <ol class="board-list" id="boardList"></ol>
+        <div class="board-actions">
+          <button class="btn ghost" id="boardRename" type="button">Change name</button>
+          <button class="btn" id="boardClose" type="button">Close</button>
+        </div>
+      </div>
+    </div>
+    <div id="wipe" hidden aria-hidden="true">
+      <div class="wipe-card">
+        <span class="wk" id="wipeKind">DIVING INTO</span>
+        <span class="wn" id="wipeNum">1</span>
+        <span class="wl" id="wipeName"></span>
+      </div>
+      <span class="wb wipe-bubble-1"></span>
+      <span class="wb wipe-bubble-2"></span>
+      <span class="wb wipe-bubble-3"></span>
+      <span class="wb wipe-bubble-4"></span>
+      <span class="wb wipe-bubble-5"></span>
+      <span class="wb wipe-bubble-6"></span>
+      <span class="wb wipe-bubble-7"></span>
+      <span class="wb wipe-bubble-8"></span>
+      <span class="wb wipe-bubble-9"></span>
+      <span class="wb wipe-bubble-10"></span>
+      <span class="wb wipe-bubble-11"></span>
+      <span class="wb wipe-bubble-12"></span>
+      <span class="wb wipe-bubble-13"></span>
+      <span class="wb wipe-bubble-14"></span>
+      <span class="wb wipe-bubble-15"></span>
+      <span class="wb wipe-bubble-16"></span>
+      <span class="wb wipe-bubble-17"></span>
+      <span class="wb wipe-bubble-18"></span>
+    </div>
+    <section id="map" hidden>
+      <div class="map-scroll" id="mapScroll">
+        <div class="map-sea" id="mapSea">
+          <div class="map-inner" id="mapInner">
+            <svg class="map-road" id="mapRoad"></svg>
+            <div id="mapDeco"></div>
+            <div id="mapNodes"></div>
+            <div class="avatar" id="avatar" aria-hidden="true">
+              <div class="av-bob">
+                <svg width="66" height="80" viewBox="0 0 66 80">
+                  <defs>
+                    <radialGradient id="avBub" cx="35%" cy="30%" r="75%">
+                      <stop offset="0" stop-color="#ffffff" />
+                      <stop offset=".5" stop-color="#c4f4ff" />
+                      <stop offset="1" stop-color="#59c4ea" />
+                    </radialGradient>
+                  </defs>
+                  <path d="M22 54h22L33 77Z" fill="#fff" />
+                  <circle cx="33" cy="31" r="30" fill="#fff" />
+                  <circle cx="33" cy="31" r="25" fill="url(#avBub)" />
+                  <g class="fish">
+                    <path
+                      d="M16 31 7 22v18Z"
+                      fill="#ff7a1a"
+                      stroke="#1d1d2b"
+                      stroke-width="1.5"
+                      stroke-linejoin="round"
+                    />
+                    <ellipse
+                      cx="34"
+                      cy="31"
+                      rx="17"
+                      ry="12"
+                      fill="#ff7a1a"
+                      stroke="#1d1d2b"
+                      stroke-width="1.5"
+                    />
+                    <path
+                      d="M26 20c-3 7-3 15 0 22M37 19c-3 8-3 16 0 24"
+                      stroke="#fff"
+                      stroke-width="5"
+                      fill="none"
+                    />
+                    <path
+                      d="M30 19l-4 -6 8 3Z"
+                      fill="#ff7a1a"
+                      stroke="#1d1d2b"
+                      stroke-width="1.2"
+                    />
+                    <circle
+                      cx="44"
+                      cy="28"
+                      r="4.2"
+                      fill="#fff"
+                      stroke="#1d1d2b"
+                      stroke-width="1.2"
+                    />
+                    <circle cx="45" cy="28" r="2.2" fill="#1d1d2b" />
+                    <path
+                      d="M43 35q3 2.5 6 0"
+                      stroke="#1d1d2b"
+                      stroke-width="1.5"
+                      fill="none"
+                      stroke-linecap="round"
+                    />
+                    <circle cx="41" cy="33.5" r="1.8" fill="#ff5fa8" opacity=".7" />
+                  </g>
+                  <ellipse
+                    cx="22"
+                    cy="17"
+                    rx="7"
+                    ry="4"
+                    fill="rgba(255,255,255,.85)"
+                    transform="rotate(-30 22 17)"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <svg class="map-sand" viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0 40C60 10 120 60 200 34s130 0 200 20V120H0Z" fill="#ffe0a0" />
+            <path d="M0 70c80-30 150 20 220-6s120 10 180 0V120H0Z" fill="#f7cd7c" />
+          </svg>
+        </div>
+      </div>
+      <div class="map-rays" aria-hidden="true"></div>
+      <div class="map-bubbles" id="mapBubbles" aria-hidden="true"></div>
+      <header class="map-top">
+        <button class="mbtn" id="mapBack" type="button" aria-label="Main menu">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#fff"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M15 5 8 12l7 7" />
+          </svg>
+        </button>
+        <div class="zone-pill" id="zonePill">Sunny Shallows</div>
+        <div class="map-top-r">
+          <span class="star-chip" id="mapStars">★ 0</span>
+          <button class="mbtn" id="mapMusic" type="button" aria-label="Music">
+            <svg viewBox="0 0 24 24" fill="#fff">
+              <path d="M9 18.5A2.5 2.5 0 1 1 6.5 16 2.5 2.5 0 0 1 9 18.5ZM9 18.5V5l11-2v13" />
+              <circle cx="17.5" cy="16" r="2.5" />
+              <path d="M9 5l11-2v3L9 8Z" />
+            </svg>
+          </button>
+          <button class="mbtn" id="mapSound" type="button" aria-label="Sound effects">
+            <svg viewBox="0 0 24 24" fill="#fff">
+              <path d="M4 9h4l5-4v14l-5-4H4Z" />
+              <path
+                d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"
+                fill="none"
+                stroke="#fff"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+        </div>
+      </header>
+      <footer class="map-bar">
+        <button class="round-btn" id="mapRanks" type="button">
+          <span class="ic">
+            <svg viewBox="0 0 24 24">
+              <path d="M7 3h10v5a5 5 0 0 1-10 0Z" fill="#ffd23f" stroke="#fff" stroke-width="1.5" />
+              <path
+                d="M7 5H4v1.5A3.5 3.5 0 0 0 7.5 10M17 5h3v1.5A3.5 3.5 0 0 1 16.5 10"
+                fill="none"
+                stroke="#fff"
+                stroke-width="1.8"
+              />
+              <path d="M10 13h4l1 4H9Z" fill="#fff" />
+              <rect x="7" y="17" width="10" height="3.5" rx="1" fill="#fff" />
+            </svg>
+          </span>
+          Ranks
+        </button>
+        <button class="go-btn" id="mapGo" type="button">
+          <b>Play</b>
+          <small id="mapGoLevel">Level 1</small>
+        </button>
+        <button class="round-btn" id="mapFind" type="button">
+          <span class="ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5">
+              <circle cx="12" cy="12" r="7" />
+              <circle cx="12" cy="12" r="2.5" fill="#ffcb26" stroke="none" />
+              <path d="M12 1v4M12 19v4M1 12h4M19 12h4" stroke-linecap="round" />
+            </svg>
+          </span>
+          Find me
+        </button>
+      </footer>
+    </section>
+
+    <script src="js/analytics.js"></script>
+    <script src="js/habitats.js"></script>
+    <script src="js/game.js"></script>
+  </body>
+</html>
