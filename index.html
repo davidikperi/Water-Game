@@ -167,16 +167,17 @@
               </li>
               <li>
                 <span>
-                  Coloured pegs only take rings of their own colour. Keep black rings off the pegs:
-                  you can't win while one is on.
+                  Any ring fits any peg, but only rings on their own colour count (white pegs count
+                  all). Keep black rings off the pegs: if one lands on a peg, you lose the level
+                  straight away.
                 </span>
               </li>
               <li>
                 <span>
                   MEGA (or
                   <kbd>Space</kbd>
-                  ) throws every loose ring up and empties any peg holding a black ring. It
-                  recharges in 8 seconds.
+                  ) throws every ring up, including the ones already on the pegs, so use it to fix
+                  mistakes. It recharges every minute.
                 </span>
               </li>
               <li>
@@ -506,6 +507,33 @@
           <button class="btn ghost" id="boardRename" type="button">Change name</button>
           <button class="btn" id="boardClose" type="button">Close</button>
         </div>
+      </div>
+    </div>
+    <div class="sea-screen" id="homeScreen" hidden>
+      <div class="sea-card home-card" role="dialog" aria-modal="true" aria-labelledby="homeTitle">
+        <div class="home-phone" aria-hidden="true">
+          <span class="hp-app"></span>
+          <span class="hp-app"></span>
+          <span class="hp-app"></span>
+          <span class="hp-app"></span>
+          <span class="hp-app hp-ours"><img src="icons/icon-192.png" alt="" /></span>
+          <span class="hp-app"></span>
+          <span class="hp-label">Water Game</span>
+          <span class="hp-ring hp-ring-1"></span>
+          <span class="hp-ring hp-ring-2"></span>
+          <span class="hp-ring hp-ring-3"></span>
+        </div>
+        <span class="eyebrow pix">LEVEL 2 UNLOCKED!</span>
+        <h2 id="homeTitle">Keep Water Game on your home screen</h2>
+        <p id="homeText">
+          Come back any time with one tap. It opens full screen and plays even when you're offline.
+        </p>
+        <ol class="home-steps" id="homeSteps" hidden></ol>
+        <button class="go-btn" id="homeAdd" type="button">
+          <b>Add to home screen</b>
+          <small>Free · takes a second</small>
+        </button>
+        <button class="btn ghost" id="homeLater" type="button">Maybe later</button>
       </div>
     </div>
     <div id="wipe" hidden aria-hidden="true">

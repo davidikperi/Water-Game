@@ -15,8 +15,13 @@ through 120 levels under the sea.
 4. Follow the level's objective: land all the rings, match their colours to
    the poles, or land a target number before time runs out. White poles accept
    any coloured ring.
-5. Keep black rings off the poles. Use **MEGA** to lift loose rings and clear
-   poles carrying black rings. It recharges every eight seconds.
+5. Keep black rings off the poles: if one lands on a pole, you lose the level
+   straight away. Use **MEGA** to blast every ring, including those already on
+   the poles, back up into the water. It recharges every minute.
+
+Hit a passing turtle with a ring to trigger a small bubble burst that lifts
+nearby loose rings. The turtle needs 2.5 seconds before it can trigger another
+burst; rings already on poles stay in place.
 
 Clear a level to unlock the next one. Finish faster to earn up to three stars,
 and replay earlier levels to improve your score. Every fifth level is a speed
@@ -67,7 +72,10 @@ after you interact with the game.
 
 Water Game supports touch controls and desktop keyboards. On supported browsers,
 you can add it to your home screen and play offline after its assets have been
-cached. The shared leaderboard needs an internet connection.
+cached. When you reach level 2, the game invites you once to add it to your home
+screen: one tap on Chrome, Edge and other Android browsers, or step-by-step
+Share menu instructions on iPhone and iPad. The shared leaderboard needs an
+internet connection.
 
 ## Admin dashboard
 

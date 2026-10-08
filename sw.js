@@ -1,6 +1,6 @@
 // Water Game service worker: makes the game load instantly and play offline once installed.
 // Bump VERSION whenever index.html (or any file below) changes, so players get the update.
-const VERSION = 'v35';
+const VERSION = 'v37';
 const APP_CACHE = `watergame-app-${VERSION}`;
 const FONT_CACHE = 'watergame-fonts';
 

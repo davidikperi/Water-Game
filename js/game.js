@@ -33,7 +33,7 @@
   /* Levels are generated, so the count can grow by raising LEVEL_COUNT. Difficulty ramps steadily with d (0 to 1):
    taller pegs, smaller catch zone, more rings, less time per ring. Pegs never pull rings in.
    Every 5th level is a speed round: white pegs, lots of rings, land a target number before time runs out.
-   Normal levels rotate objectives and always carry black "odd" rings that block the win while they sit on a peg. */
+   Normal levels rotate objectives and always carry black "odd" rings: landing one on a peg loses the level. */
   const LEVEL_COUNT = 120;
   const PEG_COLOURS = [
     ['red', 'blue'],
@@ -119,7 +119,18 @@
       L.pumps = Math.round(count * 9 * (1.3 - 0.4 * d));
       L.hint += ` Only ${L.pumps} pumps.`;
     }
-    L.hint += ` Keep the black ${L.odd === 1 ? 'ring' : 'rings'} off the pegs. MEGA knocks ${L.odd === 1 ? 'it' : 'them'} off.`;
+    // From the Kelp Forest on, some levels sway their pegs side to side (never alongside a current or pump limit).
+    if (n > 40 && k % 4 === 3 && !L.pumps) {
+      const m = (n - 41) / (LEVEL_COUNT - 41);
+      const amp = Math.round(14 + 20 * m),
+        spd = TAU / (9 - 4 * m); // a full sway every 9 s, down to 5 s
+      L.pegs.forEach((p, i) => Object.assign(p, { amp, spd, ph: i ? Math.PI : 0 })); // opposite directions
+      L.moving = true;
+      L.odd = 1; // a sliding tip can catch a sinking black ring, so keep it to one, and harder to land
+      L.oddCatch *= 0.6;
+      L.hint += ' The pegs sway!';
+    }
+    L.hint += ` Keep the black ${L.odd === 1 ? 'ring' : 'rings'} off the pegs: one landing ends the level!`;
     return L;
   }
   const LEVELS = Array.from({ length: LEVEL_COUNT }, (_, i) => makeLevel(i + 1));
@@ -418,6 +429,10 @@
       const a = audio();
       if (a) setTimeout(whoosh, 90);
     },
+    bust() {
+      tone(150, 0, 0.22, 'square', 0.09, 70);
+      tone(95, 0.05, 0.35, 'sawtooth', 0.07, 45);
+    },
     lose() {
       tone(330, 0, 0.3, 'sawtooth', 0.06, 160);
       tone(220, 0.25, 0.45, 'sawtooth', 0.05, 110);
@@ -541,12 +556,13 @@
     { held: false, t: 0, p: 0 },
     { held: false, t: 0, p: 0 },
   ];
-  let phase = 'menu'; // intro | play | won | lost | paused
+  let phase = 'menu'; // intro | play | busted | won | lost | paused (busted: a black ring just landed)
   let simT = 0,
     timeLeft = 0,
     pumpsLeft = Infinity,
     winT = 0,
     idleT = 0,
+    bustT = 0,
     running = false;
 
   const rnd = (a, b) => a + Math.random() * (b - a);
@@ -612,6 +628,7 @@
     turtles = Array.from({ length: habitat.turtles }, (_, i) => ({
       active: false,
       wait: rnd(5, 15) + i * 12,
+      burstCooldown: 0,
       x: -60,
       y: 0,
       cy: 0,
@@ -712,12 +729,14 @@
     pumpsLeft = L.pumps || Infinity;
     winT = 0;
     idleT = 0;
+    bustT = 0;
     megaCharge = 1;
     shake = 0;
     hudLevel.textContent = `Level ${i + 1} · ${L.name}`;
     hudPumps.hidden = !L.pumps;
     showIntro();
     running = true;
+    if (i === 1) offerHomeScreen(); // reaching level 2: invite them to keep the game one tap away
   }
 
   function backToMenu() {
@@ -802,8 +821,8 @@
   function showLose(reason) {
     showOverlay(`
     <span class="eyebrow">Level ${li + 1}</span>
-    <h3>${reason === 'pumps' ? 'Out of pumps' : 'Time up'}</h3>
-    <p>${rings.filter((r) => r.peg >= 0 && !r.odd).length} of ${goal} rings landed${rings.some((r) => r.odd && r.peg >= 0) ? ', with a black ring still on a peg' : ''}. Try again.</p>
+    <h3>${reason === 'black' ? 'Black ring!' : reason === 'pumps' ? 'Out of pumps' : 'Time up'}</h3>
+    <p>${reason === 'black' ? 'A black ring landed on a peg. Keep them off the pegs and try again.' : `${rings.filter(counts).length} of ${goal} rings landed. Try again.`}</p>
     <div class="actions">
       <button class="btn big" data-act="retry" data-primary type="button">Try again</button>
       <button class="btn ghost" data-act="menu" type="button">Levels</button>
@@ -1080,38 +1099,24 @@
             Math.abs(dx) < (r.odd ? CATCH_X * L.oddCatch : CATCH_X) &&
             r.cool <= 0
           ) {
-            if (!p.c || p.c === r.c || r.odd) {
-              r.peg = pi;
-              r.vx = 0;
-              r.vy = Math.max(r.vy, 10);
-              r.flash = 0.5;
-              if (phase === 'play' || phase === 'intro') sfx.plink();
-              for (let k = 0; k < 10; k++)
-                sparks.push({
-                  x: p.x,
-                  y: p.tip,
-                  vx: (Math.random() - 0.5) * 140,
-                  vy: -Math.random() * 120,
-                  life: 1,
-                  c: COLORS[r.c][0],
-                });
-              break;
-            } else {
-              // wrong colour: the tip knocks it back across toward its own colour's peg
-              const own = pegs.find((q) => q.c === r.c);
-              const s = own
-                ? Math.sign(own.x - r.x) || 1
-                : dx === 0
-                  ? Math.random() < 0.5
-                    ? -1
-                    : 1
-                  : Math.sign(dx);
-              r.vx += s * 120;
-              r.vy = -Math.abs(r.vy) * 0.3;
-              r.av += s * 3;
-              r.cool = 0.6;
-              if (phase === 'play') sfx.bonk();
-            }
+            // any ring threads onto any peg; only matching colours count toward the goal
+            r.peg = pi;
+            r.vx = 0;
+            r.vy = Math.max(r.vy, 10);
+            r.flash = 0.5;
+            if (r.odd) {
+              if (phase === 'play') blackRingLanded();
+            } else if (phase === 'play' || phase === 'intro') sfx.plink();
+            for (let k = 0; k < (r.odd ? 18 : 10); k++)
+              sparks.push({
+                x: p.x,
+                y: p.tip,
+                vx: (Math.random() - 0.5) * (r.odd ? 220 : 140),
+                vy: -Math.random() * 120,
+                life: 1,
+                c: r.odd && k % 2 ? '#ff4d4d' : COLORS[r.c][0],
+              });
+            break;
           }
         }
       } else {
@@ -1133,9 +1138,8 @@
           if (r.eject) {
             r.eject = false;
             r.vy = -260;
-            r.vx = Math.sign(p.x - p.sx) * 70 + (Math.random() - 0.5) * 40;
-          } // carry on along the lean
-          else r.vx = (Math.random() - 0.5) * 30;
+            r.vx = Math.sign(p.x - p.sx) * 70 + (Math.random() - 0.5) * 40; // carry on along the lean
+          } else r.vx = (Math.random() - 0.5) * 30;
         }
       }
     }
@@ -1230,6 +1234,7 @@
     }
     for (const t of turtles) {
       t.hit = Math.max(0, (t.hit || 0) - hr);
+      t.burstCooldown = Math.max(0, (t.burstCooldown || 0) - hr);
       if (!t.active) {
         t.wait -= hr;
         if (t.wait <= 0) {
@@ -1260,9 +1265,7 @@
       if (r.peg >= 0) continue;
       for (const t of turtles)
         if (t.active && bump(r, t.x, t.cy, t.s * 1.05, t.d * t.v, 0.6) && t.hit <= 0) {
-          t.hit = 0.4;
-          spawnSplashBubbles(t.x, t.cy, 4);
-          sfx.boop(0.7);
+          turtleBurst(t);
         }
     }
     for (const c of crabs) {
@@ -1285,10 +1288,11 @@
     }
 
     shake = Math.max(0, shake - hr);
+    if (phase === 'busted' && (bustT -= hr) <= 0) return finish(false, 'black');
     if (phase === 'play') {
       megaCharge = Math.min(1, megaCharge + hr / MEGA_TIME);
       timeLeft -= hr;
-      const placed = rings.filter((r) => r.peg >= 0 && !r.odd && r.y > pegs[r.peg].tip + 10).length;
+      const placed = rings.filter((r) => counts(r) && r.y > pegs[r.peg].tip + 10).length;
       const done = placed >= goal && !rings.some((r) => r.odd && r.peg >= 0);
       winT = done ? winT + hr : 0;
       if (winT > 0.6) return finish(true);
@@ -1298,6 +1302,27 @@
         if (idleT > 3) return finish(false, 'pumps');
       } else idleT = 0;
     }
+  }
+
+  // A turtle hit gives nearby loose rings a small lift, weaker than a MEGA burst.
+  function turtleBurst(t) {
+    if (!t.active || t.burstCooldown > 0 || phase !== 'play') return false;
+    t.burstCooldown = 2.5;
+    t.hit = 0.6;
+    const radius = 110;
+    for (const r of rings) {
+      if (r.peg >= 0) continue;
+      const dx = r.x - t.x,
+        distance = Math.hypot(dx, r.y - t.cy);
+      if (distance >= radius) continue;
+      const strength = Math.max(0.25, 1 - distance / radius);
+      r.vy = Math.min(r.vy, 0) - 180 * strength;
+      r.vx += ((dx / radius) * 70 + t.d * 20) * strength;
+      r.cool = Math.max(r.cool, 0.16);
+    }
+    spawnSplashBubbles(t.x, t.cy, 14);
+    sfx.boop(0.9);
+    return true;
   }
 
   // Push a free ring out of a round body and bounce it. Returns true on contact.
@@ -1335,20 +1360,18 @@
   }
 
   /* MEGA BURST: every jet on the floor fires at once and throws all loose rings upward. Recharges over time. */
-  const MEGA_TIME = 8; // seconds to recharge
+  const MEGA_TIME = 60; // seconds to recharge
   let megaCharge = 1,
     shake = 0;
   function megaBurst() {
     if (phase !== 'play' || megaCharge < 1) return;
     megaCharge = 0;
     shake = 0.45;
-    // a peg holding a black ring is emptied: every ring on it slides up and off the top
-    for (let pi = 0; pi < pegs.length; pi++) {
-      if (!rings.some((r) => r.peg === pi && r.odd)) continue;
-      for (const r of rings) if (r.peg === pi) r.eject = true;
-    }
     for (const r of rings) {
-      if (r.peg >= 0) continue;
+      if (r.peg >= 0) {
+        r.eject = true; // every ring on a peg slides up and off the top too
+        continue;
+      }
       r.vy = Math.min(r.vy, 0) - rnd(340, 470);
       r.vx += rnd(-110, 110);
       r.av += rnd(-7, 7);
@@ -1372,6 +1395,24 @@
     if (navigator.vibrate) {
       try {
         navigator.vibrate([30, 40, 60]);
+      } catch (e) {}
+    }
+  }
+
+  // A ring counts toward the goal only on a white peg or a peg of its own colour.
+  const counts = (r) => r.peg >= 0 && !r.odd && (!pegs[r.peg].c || pegs[r.peg].c === r.c);
+
+  // A black ring on a peg ends the level: a short beat so the player sees it land, then the lose card.
+  function blackRingLanded() {
+    phase = 'busted';
+    bustT = 0.8;
+    shake = 0.4;
+    release(0);
+    release(1);
+    sfx.bust();
+    if (navigator.vibrate) {
+      try {
+        navigator.vibrate([60, 40, 120]);
       } catch (e) {}
     }
   }
@@ -1919,7 +1960,7 @@
   }
 
   function updateHud() {
-    const on = rings.filter((r) => r.peg >= 0 && !r.odd).length,
+    const on = rings.filter(counts).length,
       oddOn = rings.some((r) => r.odd && r.peg >= 0);
     hudRings.textContent = oddOn ? `${on}/${goal} · black ring on!` : `${on}/${goal} on`;
     hudRings.classList.toggle('low', oddOn);
@@ -2055,7 +2096,11 @@
       const cls = !open ? 'lock' : i === cur ? 'cur' : s ? 'done' : 'cur';
       return (
         `<button type="button" class="node ${cls}${L.speed ? ' speed' : ''}" data-i="${i}" style="transform:translate(${pts[i].x.toFixed(1)}px,${pts[i].y.toFixed(1)}px)" aria-label="Level ${i + 1}${L.speed ? ', speed round' : ''}${open ? `, ${s} of 3 stars` : ', locked'}">` +
-        (L.speed ? '<span class="tag">SPEED</span>' : '') +
+        (L.speed
+          ? '<span class="tag">SPEED</span>'
+          : L.moving
+            ? '<span class="tag moving">MOVING</span>'
+            : '') +
         `<span class="cap">${i + 1}</span>${open ? '' : lockSvg}` +
         (s
           ? `<span class="nst">${'★'.repeat(s)}<span class="off">${'★'.repeat(3 - s)}</span></span>`
@@ -2922,6 +2967,14 @@
     });
   }
   let deferredInstall = null;
+  const ua = navigator.userAgent || '';
+  const iOS =
+    /iPad|iPhone|iPod/.test(ua) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  // Social apps open links in their own browser, which can't install; Android ones can hand off to Chrome.
+  const inAppAndroid =
+    /Android/.test(ua) &&
+    /FBAN|FBAV|Instagram|Twitter|Line/ | Snapchat | TikTok | (musical_ly / i.test(ua));
   if (!standalone && canWorker) {
     // Chrome, Edge, Samsung Internet and other Android browsers: offer the browser's own install prompt
     addEventListener('beforeinstallprompt', (e) => {
@@ -2931,10 +2984,6 @@
       installPanel.hidden = false;
     });
     // iPhone and iPad Safari have no install prompt, so explain the Share menu steps instead
-    const ua = navigator.userAgent || '';
-    const iOS =
-      /iPad|iPhone|iPod/.test(ua) ||
-      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     if (iOS) {
       installText.innerHTML =
         'Tap the Share button <span class="share-glyph" aria-hidden="true"></span> in Safari, then <b>Add to Home Screen</b>. It plays full screen, even offline.';
@@ -2953,6 +3002,60 @@
   addEventListener('appinstalled', () => {
     installPanel.hidden = true;
     deferredInstall = null;
+    closeHomeScreen();
+  });
+
+  // The once-only "add to home screen" invitation, shown over level 2's intro card.
+  const homeScreen = $('homeScreen'),
+    homeAdd = $('homeAdd'),
+    homeSteps = $('homeSteps');
+  function offerHomeScreen() {
+    if (standalone || !canWorker || save.homeAsked) return;
+    const steps = iOS
+      ? [
+          'Tap the Share button <span class="share-glyph" aria-hidden="true"></span> at the bottom of Safari.',
+          'Scroll down and choose <b>Add to Home Screen</b>.',
+          'Tap <b>Add</b>. Opened from another app? Tap <b>Open in Safari</b> first.',
+        ]
+      : inAppAndroid && !deferredInstall
+        ? [
+            'Tap the <b>⋮</b> menu at the top of this screen.',
+            'Choose <b>Open in Chrome</b> (or your browser).',
+            'Tap <b>Install</b> when Water Game offers it.',
+          ]
+        : null;
+    if (!deferredInstall && !steps) return; // this browser can't install: don't promise what it can't do
+    save.homeAsked = true;
+    persist();
+    homeSteps.innerHTML = steps ? steps.map((t) => `<li><span>${t}</span></li>`).join('') : '';
+    homeSteps.hidden = !steps;
+    homeAdd.hidden = !!steps;
+    $('homeLater').textContent = steps ? 'Got it' : 'Maybe later';
+    homeScreen.hidden = false;
+    setTimeout(() => (steps ? $('homeLater') : homeAdd).focus({ preventScroll: true }), 60);
+  }
+  function closeHomeScreen() {
+    if (homeScreen.hidden) return;
+    homeScreen.hidden = true;
+    const p = overlay.querySelector('[data-primary]');
+    if (p && !overlay.hidden) p.focus({ preventScroll: true });
+  }
+  homeAdd.addEventListener('click', async () => {
+    if (!deferredInstall) return closeHomeScreen();
+    deferredInstall.prompt();
+    try {
+      await deferredInstall.userChoice;
+    } catch (e) {}
+    deferredInstall = null;
+    installPanel.hidden = true;
+    closeHomeScreen();
+  });
+  $('homeLater').addEventListener('click', closeHomeScreen);
+  homeScreen.addEventListener('click', (e) => {
+    if (e.target === homeScreen) closeHomeScreen();
+  });
+  addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeHomeScreen();
   });
 
   /* ================= Boot ================= */

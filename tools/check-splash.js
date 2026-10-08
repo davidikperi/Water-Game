@@ -40,12 +40,16 @@ for (const reduceMotion of [false, true]) {
     setTimeout: (fn, delay) => timers.push({ fn, delay }),
   });
   // Load both functions together, as the game does: this caught the name collision.
-  vm.runInContext(extract('spawnSplashBubbles') + '\n' + extract('splash'), context);
+  vm.runInContext(
+    extract('spawnSplashBubbles') + '\n' + extract('splash') + '\n' + extract('turtleBurst'),
+    context
+  );
+  context.phase = 'play';
   const collision = script.match(
     /\/\/ loose rings bounce off the turtle[^]*?(?=for \(const c of crabs\))/
   )[0];
   vm.runInContext(collision, context);
-  assert.equal(context.bubbles.length, 4);
+  assert.equal(context.bubbles.length, 14);
   assert.equal(soundCount, 1);
   assert.equal(timers.length, 0, 'A collision must not start a transition timer');
   assert.equal(wipe.hidden, true, 'A collision must not cover the game');
@@ -56,11 +60,12 @@ for (const reduceMotion of [false, true]) {
     hr: 0.05,
     phase: 'play',
     megaCharge: 0,
-    MEGA_TIME: 8,
+    MEGA_TIME: 12,
     timeLeft: 30,
     pegs: [],
     goal: 6,
     winT: 0,
+    counts: () => false,
     pumpsLeft: Infinity,
     jets: [{ p: 0 }, { p: 0 }],
     idleT: 0,
@@ -69,14 +74,12 @@ for (const reduceMotion of [false, true]) {
     },
   });
   const clock = script
-    .slice(
-      script.indexOf('shake = Math.max(0, shake - hr);'),
-      script.indexOf('// Push a free ring')
-    )
+    .slice(script.indexOf('shake = Math.max(0, shake - hr);'), script.indexOf('// A turtle hit'))
     .trim()
     .replace(/\}\s*$/, '');
   vm.runInContext(`(() => { ${clock} })()`, context);
   assert.equal(context.timeLeft, 29.95);
+  assert.equal(context.megaCharge, 0.05 / 12);
 
   let started = 0;
   context.startNext = () => started++;
